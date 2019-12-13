@@ -19,4 +19,15 @@ router.get(
   }
 )
 
+router.post('/message',
+  (request, response, next) => {
+    Message
+      .create(request.body)
+      .then(message => {
+        response.send(message)
+      })
+      .catch(next)
+  }
+)
+
 module.exports = router
