@@ -49,7 +49,7 @@ function factory (stream) {
     try {
       const message = await Message
         .create(request.body)
-      
+
       const action = {
         type: 'NEW_MESSAGE',
         payload: message

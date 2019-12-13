@@ -51,8 +51,6 @@ app.get(
 app.get(
   '/',
   (request, response) => {
-    stream.send('hi')
-
     response.send('hello')
   }
 )
