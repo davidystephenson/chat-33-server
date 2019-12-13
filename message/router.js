@@ -9,24 +9,27 @@ const router = new Router()
 
 router.get(
   '/message',
-  (request, response, next) => {
-    Message
+  async (request, response, next) => {
+    // Message
+    //   .findAll()
+    //   .then(messages => {
+    //     response.send(messages)
+    //   })
+    //   .catch(next)
+
+    const messages = await Message
       .findAll()
-      .then(messages => {
-        response.send(messages)
-      })
-      .catch(next)
+
+    response.send(messages)
   }
 )
 
 router.post('/message',
-  (request, response, next) => {
-    Message
+  async (request, response, next) => {
+    const message = await Message
       .create(request.body)
-      .then(message => {
-        response.send(message)
-      })
-      .catch(next)
+
+    response.send(message)
   }
 )
 
