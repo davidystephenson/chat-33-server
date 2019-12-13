@@ -49,8 +49,13 @@ function factory (stream) {
     try {
       const message = await Message
         .create(request.body)
+      
+      const action = {
+        type: 'NEW_MESSAGE',
+        payload: message
+      }
 
-      const string = JSON.stringify(message)
+      const string = JSON.stringify(action)
       stream.send(string)
 
       response.send(message)

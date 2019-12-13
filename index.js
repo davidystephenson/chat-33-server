@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require(
   'body-parser'
 )
+const cors = require('cors')
 const Sse = require('json-sse')
 
 const Message = require('./message/model')
@@ -11,17 +12,15 @@ const app = express()
 
 const port = 4000
 
+const corsMiddleware = cors()
+app.use(corsMiddleware)
+
+const jsonParser = bodyParser.json()
+app.use(jsonParser)
+
 const stream = new Sse()
 const messageRouter = messageRouterFactory(stream)
-
-app.get(
-  '/',
-  (request, response) => {
-    stream.send('hi')
-
-    response.send('hello')
-  }
-)
+app.use(messageRouter)
 
 app.get(
   '/stream',
@@ -30,8 +29,13 @@ app.get(
       // Get array out of database
       const messages = await Message.findAll()
 
+      const action = {
+        type: 'ALL_MESSAGES',
+        payload: messages
+      }
+
       // Convert array into string - "serialize" it
-      const string = JSON.stringify(messages)
+      const string = JSON.stringify(action)
 
       // Prepare string to be sent to the client right after they *connect*
       stream.updateInit(string)
@@ -44,9 +48,14 @@ app.get(
   }
 )
 
-const jsonParser = bodyParser.json()
-app.use(jsonParser)
-app.use(messageRouter)
+app.get(
+  '/',
+  (request, response) => {
+    stream.send('hi')
+
+    response.send('hello')
+  }
+)
 
 app.listen(
   port,
