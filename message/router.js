@@ -17,20 +17,44 @@ router.get(
     //   })
     //   .catch(next)
 
-    const messages = await Message
-      .findAll()
+    try {
+      const messages = await Message
+        .findAll()
 
-    response.send(messages)
+      response.send(messages)
+    } catch (error) {
+      next(error)
+    }
   }
 )
 
-router.post('/message',
-  async (request, response, next) => {
+// router.post(
+//   '/message',
+//   async (request, response, next) => {
+//     try {
+//       const message = await Message
+//         .create(request.body)
+//
+//       response.send(message)
+//     } catch (error) {
+//       next(error)
+//     }
+//   }
+// )
+
+async function onPost (
+  request, response, next
+) {
+  try {
     const message = await Message
       .create(request.body)
 
     response.send(message)
+  } catch (error) {
+    next(error)
   }
-)
+}
+
+router.post('/message', onPost)
 
 module.exports = router
